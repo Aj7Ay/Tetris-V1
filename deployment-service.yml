@@ -4,7 +4,7 @@ kind: Deployment
 metadata:
   name: tetris
 spec:
-  replicas: 1
+  replicas: 3
   selector:
     matchLabels:
       app: tetris
@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
       - name: tetris
-        image: sevenajay/tetrisv1:latest
+        image: sevenajay/tetrisv2:latest
         ports:
         - containerPort: 3000   # Use port 3000
 
@@ -29,7 +29,6 @@ spec:
     app: tetris
   ports:
   - protocol: TCP
-    port: 3000               # Expose port 3000
+    port: 80                 # Expose port 80
     targetPort: 3000
   type: LoadBalancer
-
