@@ -1,32 +1,21 @@
-name: Node.js CI
+name: Deploy to EKS
 
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
-  build:
-
-    runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [15.x]
+  deploy:
+    runs-on: [self-hosted]
 
     steps:
-    - uses: actions/checkout@v2
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v1
-      with:
-        node-version: ${{ matrix.node-version }}
-    - name: Build
-      run: |
-        npm ci
-        npm run build --if-present
-    - name: Deploy
-      uses: JamesIves/github-pages-deploy-action@4.1.1
-      with:
-        branch: gh-pages
-        folder: build
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Update kubeconfig
+        run: aws eks --region ap-south-1 update-kubeconfig --name EKS_CLOUD
+
+      - name: Deploy to EKS
+        run: kubectl apply -f deployment-service.yml
 
